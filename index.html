@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ukuran Penyebaran Data</title>
+</head>
+<body>
+    <h1>Kalkulator Simpangan Kuartil</h1>
+    <p>Masukkan data (pisahkan dengan koma): <input type="text" id="dataInput" placeholder="Contoh: 1,2,3,4,5"></p>
+    <button id="hitung">Hitung</button>
+    <p><span id="hasil"></span></p>
+
+    <script>
+        const hitung = document.getElementById('hitung')
+        const hasil = document.getElementById("hasil")
+
+        hitung.addEventListener('click', () => {
+            const range = calculateRange()
+            const simpanganRataRata = hitungSimpanganRataRata()
+            const simpanganKuartil = hitungSimpanganKuartil()
+            const simpanganBaku = hitungSimpanganBaku()
+
+            hasil.innerHTML = `Rentang (Range)= ${range} <br>
+                               simpangan Rata-Rata = ${simpanganRataRata} <br>
+                               simpangan kuartil = ${simpanganKuartil} <br>
+                               simpangan baku = ${simpanganBaku} <br>`
+        })
+
+        function calculateRange() {
+            const dataInput = document.getElementById("dataInput").value;
+            const data = dataInput.split(",").map(Number);
+
+            if (data.length === 0) {
+                return 0;
+            }
+            
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            
+            return max - min;
+        }
+
+        function hitungSimpanganRataRata() {
+            const dataInput = document.getElementById("dataInput").value;
+            const data = dataInput.split(",").map(Number);
+
+            // Hitung rata-rata
+            const n = data.length;
+            const rataRata = data.reduce((total, num) => total + num, 0) / n;
+
+            // Hitung simpangan rata-rata
+            const simpanganRataRata = data.reduce((total, num) => total + Math.abs(num - rataRata), 0) / n;
+
+            // Tampilkan hasil
+            return simpanganRataRata.toFixed(2);
+        }
+
+        function hitungSimpanganKuartil() {
+            const dataInput = document.getElementById("dataInput").value;
+            const data = dataInput.split(",").map(Number);
+
+            // Urutkan data
+            data.sort((a, b) => a - b);
+
+            // Hitung kuartil pertama (Q1)
+            const n = data.length;
+            const kuartilPertamaIndex = Math.floor(n / 4);
+            const kuartilPertama = data[kuartilPertamaIndex];
+            console.log(kuartilPertama);
+
+            // Hitung kuartil ketiga (Q3)
+            const kuartilKetigaIndex = Math.floor((3 * n) / 4);
+            const kuartilKetiga = data[kuartilKetigaIndex];
+            console.log(kuartilKetiga);
+
+            // Hitung simpangan kuartil
+            const simpanganKuartil = (kuartilKetiga - kuartilPertama) / 2;
+
+            return simpanganKuartil
+        }
+
+        function hitungSimpanganBaku() {
+            const dataInput = document.getElementById("dataInput").value;
+            const data = dataInput.split(",").map(Number);
+
+            // Hitung rata-rata
+            const n = data.length;
+            const rataRata = data.reduce((total, num) => total + num, 0) / n;
+
+            // Hitung selisih kuadrat dari setiap data ke rata-rata
+            const selisihKuadrat = data.map(num => Math.pow(num - rataRata, 2));
+
+            // Hitung simpangan baku (standard deviation)
+            const simpanganBaku = Math.sqrt(selisihKuadrat.reduce((total, num) => total + num, 0) / n);
+
+            // Tampilkan hasil
+            return simpanganBaku.toFixed(2);
+        }
+        
+    </script>
+</body>
+</html>
